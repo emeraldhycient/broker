@@ -125,7 +125,8 @@ $(document).ready(() => {
                 <h6 class="text-muted mb-1"><b>1 usd = 0.0000918 BTC</b></h6>
                 <textarea class="form-control mb-2" id="walletid">hf64dy74hdyd63g35gedyd74h4u484jrhfyd63g363ge6</textarea>
                 <button class="btn btn-info btn-sm  mb-2" id="copy" onclick="copyTextFun()"><i class="fa fa-copy pr-2"></i>copy</button><br>
-               <a href="javascript:void(0);" id="cardpay"> <i class="fa fa-credit-card"></i> Pay with credit card</a>
+                  <input type="number"  id="amount" placeholder="Enter Amount > $100" class="btn btn-sm btn-default">
+                <a href="javascript:void(0);" id="cardpay"> <i class="fa fa-credit-card"></i> Pay with credit card</a>
                 </div>
                 <div class="mt-4">
                 <p class="text-muted">upload payment proof</p>
@@ -153,23 +154,24 @@ $(document).ready(() => {
     }
 
     $(document).on("click", "#cardpay", function() {
-        makePayment()
+        amount = $("#amount").val()
+        if (amount >= 100) {
+            makePayment(amount)
+        } else {
+            alert("Amount must be greater than $100")
+        }
     })
 
     let email, phone_number, name = null;
 
-    function makePayment() {
+    function makePayment($amount) {
         FlutterwaveCheckout({
             public_key: "FLWPUBK_TEST-326f6f4a1c250d847cb8214d66d85d66-X",
             tx_ref: generateId(18),
-            amount: 54600,
-            currency: "NGN",
-            country: "NG",
+            amount: amount,
+            currency: "USD",
+            country: "us",
             payment_options: "card, ussd",
-            meta: {
-                consumer_id: 23,
-                consumer_mac: "92a3-912ba-1192a",
-            },
             customer: {
                 email: email,
                 phone_number: "",
