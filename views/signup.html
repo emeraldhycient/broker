@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>btc site</title>
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./../asset/styles.css">
+</head>
+</head>
+
+<body>
+    <main>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-7" id="larger">
+                    <h1 class="mt-5 text-white title" style="font-weight: bolder;font-size:1.5em;"><i class="fa fa-bitcoin fa-2x mt-2" style="color:gold"></i> <span class="text-danger">Bitcoin</span>Vesto</h1>
+                    <p class="text-white m-3">Signup and explore <strong>Bitcoin</strong>vesto.com . </p>
+                </div>
+                <div class="col-md-5 p-5" id="log">
+                    <div class="error">
+
+                    </div>
+                    <h5 class="mb-3">Create Your Account. </h5>
+                    <form class="form-group" id="signup" method="POST" action="../controller/controller.php">
+                        <div class="form-inline">
+                            <input type="text" id="fname" name="fname" class="form-control mr-2" placeholder="First Name" style="background-color:whitesmoke" required important>
+                            <input type="text" id="lname" name="lname" class="form-control" placeholder="Last Name" style="background-color:whitesmoke" required important>
+                        </div><br>
+                        <input type="email" id="email" name="email" class="form-control" placeholder="Email" style="background-color:whitesmoke" required important><br>
+                        <div class="form-inline">
+                            <input type="password" id="password" name="password" class="form-control mr-2" placeholder="password" style="background-color:whitesmoke" required important><br>
+                            <input type="password" id="cpassword" name="cpassword" class="form-control" placeholder="confirm password" style="background-color:whitesmoke" required important><br>
+                        </div>
+                        <div class="form-inline">
+                            <input type="submit" id="shinybluebtn" class="btn btn-info mt-3" value="Create Account">
+                            <p class="p-3">OR</p>
+                            <button class="btn"><a href="./login.php">Login</a></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js "></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js "></script>
+<script src="./../asset/script.js"></script>
+
+</html>
