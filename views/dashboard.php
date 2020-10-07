@@ -112,14 +112,40 @@ if(!isset($_SESSION["logged"]))
                     </div>
                 </div>
                 <div class="col-md-3 box" id="box3">
-                    <h5 class="text-muted p-3">Withdrawal History</h5>
-                    <div class="d-flex">
-                        <h6 class="text-muted ml-1 mr-5">Tnx</h6>
-                        <h6 class="text-muted ml-5">Amount</h6>
-                        <h6 class="text-muted ml-4">Date</h6>
+                    <h5 class="text-muted p-3">Deposit History</h5>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <th class="ml-1 mr-5">Tx_Ref</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            </thead>
+                             <tbody id="tbody">
+                                 
+                             </tbody>
+                        </table>
                     </div>
                     <hr>
                 </div>
+                <div class="col-md-6 pt-4 m-auto" id="bitcoinbox">
+            <center>
+                <h4 class="text-muted mb-2">
+                    <i class="fa fa-bitcoin fa-2x mr-1 text-warning"></i>Current Bitcoin Market Trend
+                </h4>
+            </center>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead>
+                        <th>price_base</th>
+                        <th>price</th>
+                        <th>exchange</th>
+                    </thead>
+                    <tbody id="bitcointablebody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
             </div>
         </main>
     </body>

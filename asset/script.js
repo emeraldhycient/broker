@@ -19,7 +19,7 @@ $(document).ready(() => {
     })
 
     function withdrawalForm() {
-        template = `
+        let template = `
         <div class="col-md-2 text-muted" id="side">
         <ul>
             <li class="mb-4">
@@ -67,10 +67,17 @@ $(document).ready(() => {
                 </div>
                 <div class="col-md-3 box" id="box3">
                     <h5 class="text-muted p-3">Withdrawal History</h5>
-                    <div class="d-flex">
-                        <h6 class="text-muted ml-1 mr-5">Tnx</h6>
-                        <h6 class="text-muted ml-5">Amount</h6>
-                        <h6 class="text-muted ml-4">Date</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <th class="ml-1 mr-5">Tx_Ref</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            </thead>
+                             <tbody id="tbody">
+                                 
+                             </tbody>
+                        </table>
                     </div>
                     <hr>
                 </div>
@@ -82,7 +89,7 @@ $(document).ready(() => {
 
     function depositForm() {
 
-        template = `
+        let template = `
         <div class="col-md-2 text-muted" id="side">
         <ul>
             <li class="mb-4">
@@ -107,16 +114,9 @@ $(document).ready(() => {
                 Logout<i class="fa fa-sign-out ml-1"></i>
             </li>
         </ul>
-    </div>
-    <div class="col-md-3 box" id="box1">
-    <span class="badge badge-success">
-   Active Deposits
-     </span>
-    <div class="mt-3 d-flex">
-        <i class="fa fa-credit-card fa-3x mr-3"></i>
-        <h4><b>Usd</b></h4>
-        <h4 class="ml-3"><b>00.00</b></h4>
-    </div>
+    </div><br><br><br><br>
+    <div class="col-md-3 box" id="box2">
+    ${alldpt}
 </div>
                 <div class="col-md-3 box pt-5" id="box4">
                 <center>
@@ -138,12 +138,19 @@ $(document).ready(() => {
                    </center>
                 </div>
                 <div class="col-md-3 box" id="box3">
-                    <h5 class="text-muted p-3">Deposit History</h5>
-                    <div class="d-flex">
-                        <h6 class="text-muted ml-1 mr-5">Tnx</h6>
-                        <h6 class="text-muted ml-5">Amount</h6>
-                        <h6 class="text-muted ml-4">Date</h6>
-                    </div>
+                <h5 class="text-muted p-3">Deposit History</h5>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <th class="ml-1 mr-5">Tx_Ref</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        </thead>
+                         <tbody id="tbody">
+                             ${alltransct}
+                         </tbody>
+                    </table>
+                </div>
                     <hr>
                 </div>
         `
@@ -154,7 +161,7 @@ $(document).ready(() => {
     }
 
     $(document).on("click", "#cardpay", function() {
-        amount = $("#amount").val()
+        let amount = $("#amount").val()
         if (amount >= 100) {
             makePayment(amount)
         } else {
@@ -162,9 +169,9 @@ $(document).ready(() => {
         }
     })
 
-    let email, phone_number, name = null;
+    let email, name = null;
 
-    function makePayment($amount) {
+    function makePayment(amount) {
         FlutterwaveCheckout({
             public_key: "FLWPUBK_TEST-326f6f4a1c250d847cb8214d66d85d66-X",
             tx_ref: generateId(18),
@@ -178,7 +185,28 @@ $(document).ready(() => {
                 name: name,
             },
             callback: function(data) {
-                console.log(data);
+                if (data.status == "successful") {
+                    console.log(data)
+                    $.ajax({
+                        url: "../controller/controller.php",
+                        type: "post",
+                        data: {
+                            "insertPayment": "insertPayment",
+                            "tx_ref": data.tx_ref,
+                            "amount": data.amount
+                        },
+                        dataType: "JSON",
+                        success: (data2) => {
+                            if (data2.status == "success") {
+                                alert(data2.message)
+                            } else {
+                                console.log(data2)
+                            }
+                        }
+                    })
+                } else {
+                    alert("error unable to process payment now try later")
+                }
             },
             onclose: function() {
                 // close modal
@@ -194,6 +222,128 @@ $(document).ready(() => {
     function generateId(len) {
         return new Array(len).join().replace(/(.|$)/g, function() { return ((Math.random() * 36) | 0).toString(36)[Math.random() < .5 ? "toString" : "toUpperCase"](); });
     }
+
+    let alldpt, alltransct = null
+
+    $.ajax({
+        url: "../controller/controller.php",
+        type: "POST",
+        data: {
+            "totalDeposit": "totalDeposit"
+        },
+        dataType: "JSON",
+        success: (data) => {
+            alldpt = allDeposit(data)
+            $("#box2").empty()
+            $("#box2").fadeIn()
+            $("#box2").append(allDeposit(data))
+
+        }
+    })
+
+    function allDeposit(data) {
+        let template = null;
+        if (data.status == "success") {
+            if (data.allDeposit > 0) {
+                template = `
+            <span class="badge badge-success">
+            Active Deposits
+              </span>
+             <div class="mt-3 d-flex">
+                 <i class="fa fa-credit-card fa-3x mr-3"></i>
+                 <h4><b>Usd</b></h4>
+                 <h4 class="ml-3"><b>${parseInt(data.allDeposit).toLocaleString()}</b></h4>
+             </div>
+            `
+            } else {
+                template = `
+                <span class="badge badge-success">
+                Active Deposits
+                  </span>
+                 <div class="mt-3 d-flex">
+                     <i class="fa fa-credit-card fa-3x mr-3"></i>
+                     <h4><b>Usd</b></h4>
+                     <h4 class="ml-3"><b>00.00</b></h4>
+                 </div>
+                `
+            }
+        } else {
+            template = `
+            <span class="badge badge-success">
+            Active Deposits
+              </span>
+             <div class="mt-3 d-flex">
+                 <i class="fa fa-credit-card fa-3x mr-3"></i>
+                 <h4><b>Usd</b></h4>
+                 <h4 class="ml-3"><b>00.00</b></h4>
+             </div>
+            `
+        }
+        return template
+    }
+
+    $.ajax({
+        url: "../controller/controller.php",
+        type: "POST",
+        data: {
+            "fetchAllDeposit": "fetchAllDeposit"
+        },
+        dataType: "JSON",
+        success: (data) => {
+            /* console.log(data);
+             alltransct = fetchAllDeposit2(data)*/
+            $("#tbody").fadeIn()
+            fetchAllDeposit(data)
+        }
+    })
+
+    function fetchAllDeposit(data) {
+        let template = null
+        if (data.status == "success") {
+            $.each(data.alldeposit, (i, val) => {
+                template = `
+                <tr>
+                <td>${val.tx_ref}</td>
+                <td>${val.amount}</td>
+                <td>${val.date}</td>
+                </tr>
+                `
+                $("#tbody").append(template)
+            })
+        } else {
+            template = `
+            <tr>
+            <td>No Data Found</td>
+            </tr>
+            `
+            $("#tbody").append(template)
+        }
+    }
+
+    /* function fetchAllDeposit2(data) {
+
+         if (data.status == "success") {
+             $.each(data.alldeposit, (i, val) => {
+                 let template = `
+                 <tr>
+                 <td>${val.tx_ref}</td>
+                 <td>${val.amount}</td>
+                 <td>${val.date}</td>
+                 </tr>
+                 `
+                 $("#tbody").append(template)
+             })
+         } else {
+             let template = `
+             <tr>
+             <td>No Data Found</td>
+             </tr>
+             `
+             $("#tbody").append(template)
+
+         }
+
+     }*/
 
     function getCustomerDetails() {
         $.ajax({
@@ -216,7 +366,7 @@ $(document).ready(() => {
 
 
     function copyTextFun() {
-        copytext = document.getElementById("walletid");
+        let copytext = document.getElementById("walletid");
         copytext.select()
         copytext.setSelectionRange(0, 99999)
 
@@ -228,10 +378,40 @@ $(document).ready(() => {
 
     }
 
+    $.ajax({
+        url: "./controller/controller.php",
+        type: "post",
+        data: {
+            "getexchange": "getexchange"
+        },
+        dataType: "JSON",
+        success: function(data) {
+            displaybtc(data)
+        }
+    })
+
+    function displaybtc(data) {
+        let template = null;
+        if (data.status == "success") {
+            $.each(data.data.prices, (i, val) => {
+                template = ` <tr>
+                <td>${val.price_base}</td>
+                <td>${parseInt(val.price).toLocaleString()}</td>
+                <td>${val.exchange}</td>
+            </tr>`
+                $("#bitcointablebody").append(template)
+            })
+        } else {
+            template = ` <tr>
+                <td><i class="fa fa-bomb"></i>Unable to display data right now </td>
+            </tr>`
+            $("#bitcointablebody").append(template)
+        }
+    }
     $("#login").submit((e) => {
         e.preventDefault();
-        email = $("#email").val();
-        password = $("#password").val();
+        let email = $("#email").val();
+        let password = $("#password").val();
 
         $.ajax({
             url: "../controller/controller.php",
@@ -262,11 +442,11 @@ $(document).ready(() => {
 
     $("#signup").submit((e) => {
         e.preventDefault();
-        fname = $("#fname").val();
-        lname = $("#lname").val();
-        email = $("#email").val();
-        password = $("#password").val();
-        cpassword = $("#cpassword").val();
+        let fname = $("#fname").val();
+        let lname = $("#lname").val();
+        let email = $("#email").val();
+        let password = $("#password").val();
+        let cpassword = $("#cpassword").val();
         if (password == cpassword) {
             if (password.length > 8) {
                 $.ajax({
