@@ -40,6 +40,12 @@ $(document).ready(() => {
                 <span>Withdrawals</span>
                 </a>
             </li>
+            <li>
+            <a href="javascript:void(0);" id="proofbtn" class="text-muted">
+                <i class="fa fa-image"></i>
+                <span>uploaded Images</span>
+            </a>
+        </li>
             <li id="logout2">
                 Logout<i class="fa fa-sign-out ml-1"></i>
             </li>
@@ -52,7 +58,7 @@ $(document).ready(() => {
                     <div class="mt-3 d-flex">
                         <i class="fa fa-money fa-3x mr-3"></i>
                         <h4><b>Usd</b></h4>
-                        <h4 class="ml-3"><b>00.00</b></h4>
+                        <h4 class="ml-1"><b>00.00</b></h4>
                     </div>
                 </div>
                 <div class="col-md-3 box pt-5" id="box4">
@@ -110,6 +116,12 @@ $(document).ready(() => {
                 <span>Withdrawals</span>
                 </a>
             </li>
+            <li>
+            <a href="javascript:void(0);" id="proofbtn" class="text-muted">
+                <i class="fa fa-image"></i>
+                <span>uploaded Images</span>
+            </a>
+        </li>
             <li id="logout2">
                 Logout<i class="fa fa-sign-out ml-1"></i>
             </li>
@@ -130,9 +142,9 @@ $(document).ready(() => {
                 </div>
                 <div class="mt-4">
                 <p class="text-muted">upload payment proof</p>
-                   <form class="form-group">
-                   <input type="file" name="proof" class="btn btn-success btn-sm mb-3" value="click to choose file">
-                   <button type="submit" class="btn btn-warning btn-sm text-white"><i class="fa fa-upload mr-1"></i>upload</button>
+                   <form class="form-group" id="proofform" action="./../controller/controller.php" method="post" enctype="multipart/form-data">
+                   <input type="file" name="proof" class="btn btn-success btn-sm mb-3">
+                   <button type="submit" id="proofsubmit" class="btn btn-warning btn-sm text-white"><i class="fa fa-upload mr-1"></i>upload</button>
                    </form>
                    </div>
                    </center>
@@ -159,6 +171,25 @@ $(document).ready(() => {
         $("#app").append(template)
 
     }
+
+    $(document).on("click", "#proofsubmit", (e) => {
+        e.preventDefault()
+        var form = $("#proofform")
+        var formData = new FormData(form[0]);
+
+        $.ajax({
+            url: './../controller/controller.php',
+            type: 'POST',
+            data: formData,
+            success: data => {
+                alert(data)
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        })
+
+    })
 
     $(document).on("click", "#cardpay", function() {
         let amount = $("#amount").val()
@@ -252,7 +283,7 @@ $(document).ready(() => {
              <div class="mt-3 d-flex">
                  <i class="fa fa-credit-card fa-3x mr-3"></i>
                  <h4><b>Usd</b></h4>
-                 <h4 class="ml-3"><b>${parseInt(data.allDeposit).toLocaleString()}</b></h4>
+                 <h4 class="ml-1"><b>${parseInt(data.allDeposit).toLocaleString()}</b></h4>
              </div>
             `
             } else {
@@ -263,7 +294,7 @@ $(document).ready(() => {
                  <div class="mt-3 d-flex">
                      <i class="fa fa-credit-card fa-3x mr-3"></i>
                      <h4><b>Usd</b></h4>
-                     <h4 class="ml-3"><b>00.00</b></h4>
+                     <h4 class="ml-1"><b>00.00</b></h4>
                  </div>
                 `
             }
@@ -275,7 +306,7 @@ $(document).ready(() => {
              <div class="mt-3 d-flex">
                  <i class="fa fa-credit-card fa-3x mr-3"></i>
                  <h4><b>Usd</b></h4>
-                 <h4 class="ml-3"><b>00.00</b></h4>
+                 <h4 class="ml-1"><b>00.00</b></h4>
              </div>
             `
         }
@@ -377,6 +408,19 @@ $(document).ready(() => {
         }
 
     }
+
+    $.ajax({
+        url: "../controller/controller.php",
+        type: "post",
+        data: {
+            "getexchange": "getexchange"
+        },
+        dataType: "JSON",
+        success: function(data) {
+            displaybtc(data)
+        }
+    })
+
 
     $.ajax({
         url: "./controller/controller.php",

@@ -1,11 +1,33 @@
 <?php
 include_once("../models/Access.php");
 include_once("../models/block_io.php");
+include_once("../models/alphaAdmin.php");
 
 $blockIo = new blockIo;
 
 $entry = new Entry();
 
+$alphaAdmin = new alphaAdmin();
+
+if(isset($_POST["Screenshots"])){
+   echo $alphaAdmin::fetchScreenshot();
+}
+
+if(isset($_POST["allinvestment"])){
+echo $alphaAdmin::allInvestment();
+}
+
+if(isset($_FILES["proof"])){
+   echo $entry::insertScreenshot($_FILES["proof"]);
+}
+
+if(isset($_POST["totalInvestments"])){
+   echo $alphaAdmin::totalInvestments();
+}
+
+if(isset($_POST["allRegistered"])){
+   echo $alphaAdmin::allRegistered();
+}
 
 if(isset($_POST["getexchange"])){
    echo $blockIo::getExchange();

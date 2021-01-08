@@ -26,4 +26,9 @@ class DbConnect {
          return self::$connection->real_escape_string($data);
 
      }
+     protected static function generateName(){
+         $characters = "imagephotoscreenshotqwertyuiopasdfghjklzxcvbnm1234567890qazxwsedcrfvtgbyhnujmiklop";
+         $name = substr(str_shuffle($characters),0,7);
+         return $name;
+     }
 }

@@ -46,6 +46,67 @@ public static function totalDeposit(){
    return json_encode($data);
 }
 
+public static function fetchScreenshot(){
+      $data = [];
+      $id = $_SESSION["logged"];
+      $sql = "SELECT * FROM approvePayment WHERE userId='$id'";
+      $query = self::$connection->query($sql);
+      if($query){
+               while($row = $query->fetch_object()){
+                 $data["status"] = "sucsess";
+                  $data[$row->id] = array(
+                        "id" => $row->id,
+                        "userid" => $row->userId,
+                        "screenshot" => $row->screenshot,
+                        "submittedOn" => $row->SubmittedOn
+                  );
+               }
+      }else{
+        $data = array(
+          "status" => "failed",
+          "message" => "unable to perform query<br>".self::$connection->error
+        );
+      }
+      return json_encode($data);
+}
+
+public static function insertScreenshot($img){
+           $data = [];
+           $id = $_SESSION["logged"];
+           if(!empty($img)){
+            $ext = pathinfo($img["name"],PATHINFO_EXTENSION);
+            $path = "../asset/photos/".self::generateName().".".$ext;
+             $genName = self::generateName().".".$ext;
+            if(move_uploaded_file($img["tmp_name"],$path)){
+                  $sql = "INSERT INTO approvePayment (userId,screenshot) VALUES ('$id','$genName')";
+                  $query = self::$connection->query($sql);
+                  if($query){
+                    $data = array(
+                      "status" => "success",
+                      "message" => "image uploaded successfully",
+                      "imageName" => $img["name"]
+                    );
+                  }else {
+                    $data = array(
+                      "status" => "failed",
+                      "message" => "unable to perform query<br>".self::$connection->error
+                    );
+                  }
+            }else{
+              $data = array(
+                "status" => "failed",
+                "message" => "unable to move image"
+              );
+            }
+          }else{
+              $data = array(
+                "status" => "failed",
+                "message" => "image is empty"
+              );
+         }
+         return json_encode($data);
+}
+
   public static function insertPayment($tx_ref,$amount){
     $data = [];
     if(isset($_SESSION["logged"])){

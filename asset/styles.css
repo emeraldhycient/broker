@@ -154,6 +154,7 @@ nav {
         height: 100vh;
         padding-top: 60px;
         padding-left: 30px;
+        position: static;
     }
     #navbarSupportedContent20 {
         display: none;
@@ -164,7 +165,7 @@ nav {
     #bitcoinbox {
         margin-top: 150px;
         box-shadow: 5px 5px 42px 5px rgba(0, 0, 0, 0.31);
-        height: 400px;
+        height: 700px;
         overflow: scroll;
         background-color: whitesmoke;
         padding: 50px;
