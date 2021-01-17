@@ -99,16 +99,16 @@ class alphaAdmin extends DbConnect{
 
     public static function fetchScreenshot(){
         $data = [];
-        $sql = "SELECT * FROM approvePayment";
+        $sql = "SELECT * FROM approvePayment ORDER BY id DESC";
         $query = self::$connection->query($sql);
         if($query){
                  while($row = $query->fetch_object()){
-                   $data["status"] = "sucsess";
+                   $data["status"] = "success";
                     $data[$row->id] = array(
                           "id" => $row->id,
                           "userid" => $row->userId,
                           "screenshot" => $row->screenshot,
-                          "status" => $row->status,
+                          "status" => $row->statuz,
                           "submittedOn" => $row->SubmittedOn
                     );
                  }
@@ -121,36 +121,148 @@ class alphaAdmin extends DbConnect{
         return json_encode($data);
   }
 
-  public static function approvePayment($userId,$tx_ref,$amount){
+  public static  function fetchSingleScreenshot($proveid){
+      $data  = [];
+      
+    $proveid = self::filter($proveid);
+
+    $sql = "SELECT * FROM approvePayment WHERE id =$proveid";
+    $query = self::$connection->query($sql);
+    if($query){
+               if($query->num_rows > 0 ){
+                       $row = $query->fetch_object();
+                       $data["status"] = "success";
+                       $data['data'] = array(
+                             "id" => $row->id,
+                             "userid" => $row->userId,
+                             "screenshot" => $row->screenshot,
+                             "status" => $row->statuz,
+                             "submittedOn" => $row->SubmittedOn
+                       );
+               }else{
+                $data = array(
+                    "status" => "failed",
+                    "message" => "no data with  such id found"
+                  );
+                }
+    }else{
+        $data = array(
+            "status" => "failed",
+            "message" => "unable to perform query<br>".self::$connection->error
+          );
+        }
+        return json_encode($data);
+
+  }
+
+  public static function approvePayment($userId,$tx_ref,$amount,$proveid){
       $data = [];
 
+        $proveid = self::filter($proveid);
         $userId = self::filter($userId);
         $tx_ref = self::filter($tx_ref);
         $amount = self::filter($amount);
-
-        if(isset($_SESSION["logged"])){
+            
             $sql = "INSERT INTO transactions (userid,transaction_id,amount) VALUES ('$userId','$tx_ref','$amount')";
+
+            $sql2 = "UPDATE approvePayment SET statuz = 'answered' WHERE id='$proveid'";
+            
             $query = self::$connection->query($sql);
+            $query2 = self::$connection->query($sql2);
             if($query){
-                     $data = [
-                      "status" => "success",
-                      "message" => "payment successful"
-                     ];
+                
+                if($query2){
+                
+                    $data = [
+                     "status" => "success",
+                     "message" => "payment approved"
+                    ];
+           }else{
+                $data = [
+                  "status" => "failed 2",
+                  "message" => self::$connection->error
+                ];
+           }
             }else{
                  $data = [
                    "status" => "failed",
                    "message" => self::$connection->error
                  ];
             }
-          }else{
-            $data = [
-              "status" => "failed",
-              "message" => "you must be logged in to be able to access this function"
-            ];
-          }
-
+    
       return json_encode($data);
   }
+
+   public static function insertWalletAddress($address)
+  {
+      $data = [];
+      $walletAddress = self::filter($address);
+      $sql = "UPDATE bitcoin SET walletaddress='$walletAddress' WHERE id = 1 ";
+      $query = self::$connection->query($sql);
+      if($query){
+                
+        $data = [
+         "status" => "success",
+         "message" => "wallet updated successful"
+        ];
+        }else{
+            $data = [
+            "status" => "failed",
+            "message" => self::$connection->error
+            ];
+        }
+
+        return json_encode($data);
+}
+
+public static function insertBitcoinPrice($price)
+{
+    $price = self::filter($price);
+
+    $data = [];
+    $sql = "UPDATE bitcoin SET btcprice='$price' WHERE id=1 ";
+    $query = self::$connection->query($sql);
+    if($query){
+              
+      $data = [
+       "status" => "success",
+       "message" => "bitcoin price  updated successful"
+      ];
+      }else{
+          $data = [
+          "status" => "failed",
+          "message" => self::$connection->error
+          ];
+      }
+
+      return json_encode($data);
+
+
+}
+
+public static function changeEmail($email)
+{
+
+    $data= [];
+    $email = self::filter($email);
+    $sql = "UPDATE alphaadmin SET email ='$email' WHERE id = 1 ";
+    $query = self::$connection->query($sql);
+
+    if($query){
+              
+        $data = [
+         "status" => "success",
+         "message" => "email  updated successful"
+        ];
+        }else{
+            $data = [
+            "status" => "failed",
+            "message" => self::$connection->error
+            ];
+        }
+    return json_encode($data);
+
+}
   
 
 }

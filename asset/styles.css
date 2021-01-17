@@ -231,6 +231,7 @@ nav {
         height: 400px;
         background-color: whitesmoke;
         margin: 15px;
+        width: 100%;
     }
     #side {
         display: none;

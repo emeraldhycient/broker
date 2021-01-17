@@ -49,15 +49,16 @@ public static function totalDeposit(){
 public static function fetchScreenshot(){
       $data = [];
       $id = $_SESSION["logged"];
-      $sql = "SELECT * FROM approvePayment WHERE userId='$id'";
+      $sql = "SELECT * FROM approvePayment WHERE userId='$id' ORDER BY id DESC";
       $query = self::$connection->query($sql);
       if($query){
                while($row = $query->fetch_object()){
-                 $data["status"] = "sucsess";
+                 $data["status"] = "success";
                   $data[$row->id] = array(
                         "id" => $row->id,
                         "userid" => $row->userId,
                         "screenshot" => $row->screenshot,
+                        "status" => $row->statuz,
                         "submittedOn" => $row->SubmittedOn
                   );
                }
@@ -75,10 +76,10 @@ public static function insertScreenshot($img){
            $id = $_SESSION["logged"];
            if(!empty($img)){
             $ext = pathinfo($img["name"],PATHINFO_EXTENSION);
-            $path = "../asset/photos/".self::generateName().".".$ext;
              $genName = self::generateName().".".$ext;
+             $path = "../asset/photos/".$genName;
             if(move_uploaded_file($img["tmp_name"],$path)){
-                  $sql = "INSERT INTO approvePayment (userId,screenshot) VALUES ('$id','$genName')";
+                  $sql = "INSERT INTO approvePayment (userId,screenshot,statuz) VALUES ('$id','$genName','pending')";
                   $query = self::$connection->query($sql);
                   if($query){
                     $data = array(
@@ -157,28 +158,51 @@ public static function insertScreenshot($img){
 }
 
    public static function login($email,$password){
+
+    $data = [];
+    
        $email = self::filter($email);
        $password = self::filter($password);
        $sql = "SELECT * FROM credentials WHERE Email='$email'";
        $query = self::$connection->query($sql);
-       $data = [];
-        if($query->num_rows > 0){
-              while($row = $query->fetch_object()){
-                if(password_verify($password,$row->pass)){
-                  $_SESSION["logged"] = $row->userid;
-                  $_SESSION["username"] = $row->Fname."-".$row->Lname;
-                  $data["status"] = "success";
-                  $data["message"] = "logged in";
-                }else{
-                  $data["status"] = "failed";
-                  $data["message"] = "invalid credentials";
-                }
-              }
-       }else{
-        $data["status"] = "failed";
-        $data["message"] = "No user found";
-       }
 
+       if($query){
+
+        if($query->num_rows > 0){
+          while($row = $query->fetch_object()){
+            if(password_verify($password,$row->pass)){
+              $_SESSION["logged"] = $row->userid;
+              $_SESSION["username"] = $row->Fname."-".$row->Lname;
+              $data = array(
+                "status"=> "success",
+                "message" => "logged in"
+              );
+            
+            }else{
+              $data = array(
+                "status"=> "failed",
+                "message" => "invalid credentials"
+              );
+
+            }
+          }
+   }else{
+    $data = array(
+      "status"=> "failed",
+      "message" => self::$connection->error
+    );
+
+   }
+
+       }else{
+
+        $data = array(
+          "status"=> "failed",
+          "message" => self::$connection->error
+        );
+         
+       }
+       
        return json_encode($data);
    }
 
@@ -203,6 +227,31 @@ public static function insertScreenshot($img){
             }
        
       return json_encode($data);
+   }
+
+   public static function btcdetails(){
+    $data = [];
+    $sql = "SELECT *  FROM bitcoin";
+    $query = self::$connection->query($sql);
+    if($query){
+      if($query->num_rows > 0){
+        while($row = $query->fetch_object()){
+          $data["status"] = "success";
+          $data["data"] = array(
+            "btcprice" => $row->btcprice,
+            "walletaddress" => $row->walletaddress
+          );
+        }
+      }else{
+        $data["status"] = "failed";
+        $data["message"] = "no data found";
+      }
+    }else{
+      $data["status"] = "failed";
+      $data["message"] = self::$connection->error;
+    }
+      return json_encode($data);
+
    }
 
    public static function logout(){

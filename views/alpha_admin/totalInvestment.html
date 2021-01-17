@@ -120,8 +120,8 @@
                             <?php echo strtoupper($_SESSION["username"]); ?> 
                         </b>
                     </li>
-                    <li class=" nav-item active">
-                        <a class=" nav-link text-white" href=" ./dashboard.php " id=" paymentProof2 ">
+                    <li class=" nav-item">
+                        <a class=" nav-link text-muted" href=" ./dashboard.php " id=" paymentProof2 ">
                             <i class=" fa fa-money "></i>
                             <span>Payment Proof</span> </a>
                     </li>
@@ -135,8 +135,8 @@
                             <i class=" fa fa-stack-overflow "></i>
                             <span>Bitcoin Trend</span> </a>
                     </li>
-                    <li class=" nav-item ">
-                        <a class=" nav-link totalInvestment2 " href="totalInvestment.html" id=" ">
+                    <li class=" nav-item active">
+                        <a class=" nav-link text-white totalInvestment2 " href="totalInvestment.html" id=" ">
                             <i class=" fa fa-road "></i>
                             <span>Total Investments</span> </a>
                     </li>
@@ -147,9 +147,9 @@
                         </a>
                     </li>
                     <li class=" nav-item ">
-                        <a class=" nav-link " href=" javascript:void(0); " id=" ">
+                        <a class=" nav-link " href="settings.html" id=" ">
                             <i class=" fa fa-stack-exchange "></i>
-                            <span>Currency Conversion</span> </a>
+                            <span>settings</span> </a>
                     </li>
                     <li class=" nav-item ">
                         <a class=" nav-link " href=" # " id=" logout1 ">
@@ -171,8 +171,8 @@
                             <?php echo strtoupper($_SESSION["username "]); ?>
                         </b>
                         </li>
-                        <li class=" bg-info p-2">
-                            <a href=" ./dashboard.php " id=" paymentProof " class=" text-white ">
+                        <li>
+                            <a href=" ./dashboard.php " id=" paymentProof " class=" text-muted ">
                                 <i class=" fa fa-money "></i>
                                 <span>Payment Proof</span>
                             </a>
@@ -189,8 +189,8 @@
                                 <span>Bitcoin Trend</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="totalInvestment.html" id=" " class=" text-muted totalInvestment ">
+                        <li class=" bg-info p-2">
+                            <a href="totalInvestment.html" id=" " class=" text-white totalInvestment ">
                                 <i class=" fa fa-road "></i>
                                 <span>Total Investments</span>
                             </a>
@@ -202,9 +202,9 @@
                             </a>
                         </li>
                         <li>
-                            <a href=" javascript:void(0); " id=" " class=" text-muted ">
+                            <a href="settings.html" id=" " class=" text-muted ">
                                 <i class=" fa fa-stack-exchange "></i>
-                                <span>Currency Conversion</span>
+                                <span>settings</span>
                             </a>
                         </li>
                         <li id=" logout2 " class=" text-muted ">
@@ -215,18 +215,7 @@
                 <div class=" col-md-9 pt-5 main ">
                     <div class=" container attach text-muted ">
                         <div class="ttlinvestment ">
-                            <div class="total ">
-                                <div class=" moneybox text-muted " id="box2 ">
-                                    <span class="badge badge-success ">
-                                                    All Deposits
-                                                </span>
-                                    <div class="mt-5 d-flex " id="ins ">
-                                        <i class="fa fa-credit-card fa-3x mr-3 "></i>
-                                        <h3><b>Usd</b></h3>
-                                        <h3 class="ml-1 " style="color: rgb(226, 222, 222); "><b>00.00</b></h3>
-                                    </div>
-                                </div>
-                            </div>
+
                         </div>
                         <div class="pt-4" id="bitcoinbox">
                             <center>
@@ -279,7 +268,7 @@
         function parseTotalInvestments(data) {
             let template = null
 
-            if (data.status === "success ") {
+            if (data.status === 'success') {
                 template = `
                            <div class="total ">
                             <div class=" moneybox text-muted " id="box2 ">
@@ -294,6 +283,27 @@
             </div>
             </div>
             `
+
+                $(".ttlinvestment").append(template)
+
+            } else {
+                template = `
+                           <div class="total ">
+                            <div class=" moneybox text-muted " id="box2 ">
+                                <span class="badge badge-success ">
+                                        All Deposits
+                                    </span>
+                                <div class="mt-5 d-flex " id="ins ">
+                                    <i class="fa fa-credit-card fa-3x mr-3 "></i>
+                                    <h3><b>Usd</b></h3>
+                        <h3 class="ml-1 " style="color: rgb(226, 222, 222); "><b>${data.totalInvestments}</b></h3>
+            </div>
+            </div>
+            </div>
+            `
+                $(".ttlinvestment").append(template)
+
+
             }
         }
         $.ajax({

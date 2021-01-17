@@ -34,6 +34,7 @@ body {
 #largerportion {
     overflow-y: scroll;
     height: 100vh;
+    padding-top: 90px;
 }
 </style>
 </head>
@@ -56,10 +57,10 @@ body {
                             <i class="fa fa-user mr-1"></i>
                             <?php echo strtoupper($_SESSION["username"]); ?> </a>
                     </li>
-                    <li class="nav-item active">
-                        <i class="fa fa-dashboard text-white"></i>
-                        <a href="./dashboard.php" class="text-white">Dashboard</a>
-                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link" href="./dashboard.php">
+                            <i class="fa fa-credit-card"></i>
+                            <span>Deposit</span> </a>
                     </li>
                     <li class="nav-item ">
                         <a class="nav-link" href="./deposit.php" id="Deposit1">
@@ -81,7 +82,7 @@ body {
                             <i class="fa fa-money"></i>
                             <span>Withdrawal history</span> </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item active">
                         <a class="nav-link" href="./proofs.php" id="withdrawal1">
                             <i class="fa fa-image"></i>
                             <span>uploaded Images</span> </a>
@@ -97,15 +98,15 @@ body {
     </header>
     <main class="container-fluid">
         <div class="row" id="app">
-            <div class="col-md-2 text-muted" id="side">
+            <div class="col-md-3 text-muted" id="side">
                 <ul>
-                    <li class="mb-4">
+                    <li class="">
                         <i class="fa fa-user mr-1"></i>
                         <?php echo strtoupper($_SESSION["username"]); ?>
                     </li>
-                    <li class="bg-info p-2">
-                        <i class="fa fa-dashboard text-white"></i>
-                        <a href="./dashboard.php" class="text-white">Dashboard</a>
+                    <li>
+                        <i class="fa fa-dashboard text-muted"></i>
+                        <a href="./dashboard.php" class="text-muted">Dashboard</a>
                     </li>
                     <li>
                         <a href="./deposit.php" id="Deposit2" class="text-muted">
@@ -129,8 +130,8 @@ body {
                             <span>Withdrawal History</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="./proofs.php" id="proofbtn" class="text-muted">
+                    <li class="bg-info p-2 mt-3">
+                        <a href="./proofs.php" id="proofbtn" class="text-white">
                             <i class="fa fa-image"></i>
                             <span>uploaded Images</span>
                         </a>
@@ -140,64 +141,13 @@ body {
                     </li>
                 </ul>
             </div>
-            <div class="col-md-10" id="largerportion">
-                <div class="row">
-                    <div class="col-md-3 box" id="box1">
-                        <span class="badge badge-danger">
-                            Earnings
-                        </span>
-                        <div class="mt-3 d-flex">
-                            <i class="fa fa-money fa-3x mr-3"></i>
-                            <h4><b>Usd</b></h4>
-                            <h4 class="ml-1"><b>00.00</b></h4>
+            <div class="col-md-9" id="largerportion">
+                <center>
+                    <div class="col-md-9">
+                        <div class="screenshots">
                         </div>
                     </div>
-                    <div class="col-md-3 box" id="box2">
-                        <span class="badge badge-success">
-                            Active Deposits
-                        </span>
-                        <div class="mt-3 d-flex">
-                            <i class="fa fa-credit-card fa-3x mr-3"></i>
-                            <h4><b>Usd</b></h4>
-                            <h4 class="ml-1"><b>00.00</b></h4>
-                        </div>
-                    </div>
-                    <div class="col-md-4 box" id="box3">
-                        <h5 class="text-muted p-3">Deposit History</h5>
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <th class="ml-1 mr-5">Tx_Ref</th>
-                                    <th>Amount</th>
-                                    <th>Date</th>
-                                </thead>
-                                <tbody id="tbody">
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr>
-                    </div>
-                    <div class="col-md-10 pt-4 m-auto" id="bitcoinbox">
-                        <center>
-                            <h4 class="text-muted mb-2">
-                                <i class="fa fa-bitcoin fa-2x mr-1 text-warning"></i>Current Bitcoin Market Trend
-                            </h4>
-                        </center>
-                        <div class="table-responsive">
-                            <table class="table table-hover table-striped">
-                                <thead>
-                                    <th>price_base</th>
-                                    <th>price</th>
-                                    <th>exchange</th>
-                                </thead>
-                                <tbody id="bitcointablebody">
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                </center>
             </div>
 
         </div>
@@ -208,6 +158,54 @@ body {
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js "></script>
 <script src="./../asset/script.js "></script>
 <script>
+$(document).ready(() => {
+    $.ajax({
+        url: './../controller/controller.php',
+        type: 'POST',
+        dataType: 'JSON',
+        data: {
+            'getproofs': 'getproofs'
+        },
+        success: (res) => {
+            parseScreenshots(res);
+        }
+    })
+
+    function parseScreenshots(data) {
+
+        console.log(data);
+
+        if (data.status === 'success') {
+            $.each(data, (i, val) => {
+
+                let template = `<div class="card mb-2">
+                                <div class="card-header ">
+                                    <span class="badge badge-success ">status : ${val.status}</span>
+                                </div>
+                                <div class="card-body">
+                                    <img src="./../asset/photos/${val.screenshot} " alt="" style="width:100%;height:300px ">
+                                </div>
+                               
+                            </div>`
+                $(".screenshots").append(template)
+            })
+
+        } else {
+
+            let template = `<div class="card mb-2">
+                                <div class="card-header ">
+                                    <span class="badge badge-success ">status : error</span>
+                                </div>
+                                <div class="card-body ">
+                                    <h6> no data found </h6>
+                                </div>
+                               
+                            </div>`
+            $(".screenshots").append(template)
+
+        }
+    }
+})
 </script>
 
 </html>

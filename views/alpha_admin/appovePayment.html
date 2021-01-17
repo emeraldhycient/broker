@@ -120,8 +120,8 @@
                             <?php echo strtoupper($_SESSION["username"]); ?> 
                         </b>
                     </li>
-                    <li class=" nav-item active">
-                        <a class=" nav-link text-white" href=" ./dashboard.php " id=" paymentProof2 ">
+                    <li class=" nav-item ">
+                        <a class=" nav-link" href=" ./dashboard.php " id=" paymentProof2 ">
                             <i class=" fa fa-money "></i>
                             <span>Payment Proof</span> </a>
                     </li>
@@ -171,8 +171,8 @@
                             <?php echo strtoupper($_SESSION["username "]); ?>
                         </b>
                         </li>
-                        <li class=" bg-info p-2">
-                            <a href=" ./dashboard.php " id=" paymentProof " class=" text-white ">
+                        <li>
+                            <a href=" ./dashboard.php " id=" paymentProof " class=" text-muted ">
                                 <i class=" fa fa-money "></i>
                                 <span>Payment Proof</span>
                             </a>
@@ -214,12 +214,14 @@
                 </div>
                 <div class=" col-md-9 pt-5 main ">
                     <div class=" container attach text-muted ">
-                        <div class="col-md-11">
-                            <center>
-                                <div class="screenshots mb-5 ">
+                        <div class="screenshots mb-5 ">
 
-                                </div>
-                            </center>
+                        </div>
+                        <div class="col-md-6 m-auto card p-3">
+                            <form class="form-inline input-group-sm">
+                                <input type="number" placeholder="enter amount in dollar" class="form-control col mr-1" important required>
+                                <button type="submit" class="btn btn-sm btn-info">submit</button>
+                            </form>
                         </div>
                         <div class="pt-4" id="bitcoinbox">
                             <center>
@@ -257,34 +259,44 @@
 <script>
     $(document).ready(() => {
 
+        const queryString = window.location.search;
+
+        const urlParams = new URLSearchParams(queryString);
+
+        const proveid = urlParams.get('proveid');
+
+        let userid = null
+
         $.ajax({
             url: '../../controller/controller.php',
-            type: 'POST',
+            method: 'POST',
             dataType: 'JSON',
             data: {
-                'Screenshots': 'Screenshots'
+                "proveid": proveid
             },
-            success: (res) => {
-                parseScreenshots(res);
+            success: res => {
+                parseProve(res)
             }
         })
 
-        function parseScreenshots(data) {
-            if (data.status === 'success') {
-                $.each(data, (i, val) => {
-
-                    let template = `<div class="card mb-2">
+        function parseProve(res) {
+            if (res.status === 'success') {
+                userid = res.data.userid;
+                let template = `<div class="card mb-2">
                                 <div class="card-header ">
-                                    <span class="badge badge-success ">status : ${val.status}</span>
-                                    <button class="btn btn-sm btn-info offset-md-10 offset-9"><a href="appovePayment.html?proveid=${val.id}" class="text-white">approve</button>
+                                    <span class="badge badge-success ">status : ${res.data.status}</span>
                                 </div>
                                 <div class="card-body ">
-                                    <img src="../../asset/photos/${val.screenshot} " alt="" style="width:100%;height:300px ">
+                                    <img src="../../asset/photos/${res.data.screenshot} " alt="" style="width:100%;height:300px ">
                                 </div>
                                
                             </div>`
-                    $(".screenshots").append(template)
-                })
+
+                $(".screenshots").append(template)
+
+                if (res.data.status === 'answered') {
+                    $(".col-md-6").hide()
+                }
 
             } else {
 
@@ -293,7 +305,7 @@
                                     <span class="badge badge-success ">status : error</span>
                                 </div>
                                 <div class="card-body ">
-                                    <h6> no data found </h6>
+                                    <h6>${res.message}</h6>
                                 </div>
                                
                             </div>`
@@ -301,6 +313,7 @@
 
             }
         }
+
 
         $.ajax({
             url: '../../controller/controller.php',
@@ -329,7 +342,46 @@
 
         }
 
-    });
+        function generateId(len) {
+            return new Array(len).join().replace(/(.|$)/g, function() {
+                return ((Math.random() * 36) | 0).toString(36)[Math.random() < .5 ? "toString" : "toUpperCase"]();
+            });
+        }
+
+        $("form").submit((e) => {
+            e.preventDefault()
+            request()
+        })
+
+
+        function request() {
+
+            const tx_ref = generateId(18)
+            const amount = $("input").val()
+
+            $.ajax({
+                url: '../../controller/controller.php',
+                type: 'POST',
+                dataType: 'JSON',
+                data: {
+                    'tx_ref': tx_ref,
+                    'amount': amount,
+                    'userid': userid,
+                    'proveid': proveid
+                },
+                success: (res) => {
+                    if (data.status === 'success') {
+                        alert(data.message)
+                    } else {
+                        alert("an error occured")
+                    }
+                }
+            })
+
+
+        }
+
+    })
 </script>
 
 </html>

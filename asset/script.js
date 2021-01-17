@@ -2,175 +2,6 @@ $(document).ready(() => {
 
     getCustomerDetails()
 
-    $(document).on("click", "#Deposit1", function() {
-        depositForm()
-    })
-
-    $(document).on("click", "#Deposit2", function() {
-        depositForm()
-    })
-
-    $(document).on("click", "#withdrawal1", function() {
-        withdrawalForm()
-    })
-
-    $(document).on("click", "#withdrawal2", function() {
-        withdrawalForm()
-    })
-
-    function withdrawalForm() {
-        let template = `
-        <div class="col-md-2 text-muted" id="side">
-        <ul>
-            <li class="mb-4">
-                <i class="fa fa-user mr-1"></i>
-                ${name.toUpperCase()}
-            </li>
-            <li class="bg-info p-2">
-                <i class="fa fa-dashboard text-white"></i>
-                <a href="./dashboard.php" class="text-white">Dashboard</a></li>
-            <li>
-                <a href="javascript:void(0);" id="Deposit2" class="text-muted">
-                    <i class="fa fa-credit-card"></i>
-                    <span>Deposits</span></a>
-            </li>
-            <li>
-                <a href="javascript:void(0);" id="withdrawal2" class="text-muted">
-                <i class="fa fa-money"></i>
-                <span>Withdrawals</span>
-                </a>
-            </li>
-            <li>
-            <a href="javascript:void(0);" id="proofbtn" class="text-muted">
-                <i class="fa fa-image"></i>
-                <span>uploaded Images</span>
-            </a>
-        </li>
-            <li id="logout2">
-                Logout<i class="fa fa-sign-out ml-1"></i>
-            </li>
-        </ul>
-    </div>
-                <div class="col-md-3 box" id="box1">
-                    <span class="badge badge-danger">
-                       Earnings
-                </span>
-                    <div class="mt-3 d-flex">
-                        <i class="fa fa-money fa-3x mr-3"></i>
-                        <h4><b>Usd</b></h4>
-                        <h4 class="ml-1"><b>00.00</b></h4>
-                    </div>
-                </div>
-                <div class="col-md-3 box pt-5" id="box4">
-                <center>
-                <h5 class="text-muted">Withdraw Fund</h5>
-                   <form class="form-group pt-5">
-                   <input type="number" name="amount" placeholder="Enter Amount" class="form-control mb-2">
-                   <input type="text" name="address" placeholder="Wallet address-:Type address very careful" class="form-control mb-2">
-                   <input type="submit" class="btn btn-info" value="process withdrawal">
-                   </form>
-                   </center>
-                </div>
-                <div class="col-md-3 box" id="box3">
-                    <h5 class="text-muted p-3">Withdrawal History</h5>
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                            <th class="ml-1 mr-5">Tx_Ref</th>
-                            <th>Amount</th>
-                            <th>Date</th>
-                            </thead>
-                             <tbody id="tbody">
-                                 
-                             </tbody>
-                        </table>
-                    </div>
-                    <hr>
-                </div>
-        `
-        $("#app").fadeIn();
-        $("#app").empty()
-        $("#app").append(template)
-    }
-
-    function depositForm() {
-
-        let template = `
-        <div class="col-md-2 text-muted" id="side">
-        <ul>
-            <li class="mb-4">
-                <i class="fa fa-user mr-1"></i>
-                ${name.toUpperCase()}
-            </li>
-            <li class="bg-info p-2">
-                <i class="fa fa-dashboard text-white"></i>
-                <a href="./dashboard.php" class="text-white">Dashboard</a></li>
-            <li>
-                <a href="javascript:void(0);" id="Deposit2" class="text-muted">
-                    <i class="fa fa-credit-card"></i>
-                    <span>Deposits</span></a>
-            </li>
-            <li>
-                <a href="javascript:void(0);" id="withdrawal2" class="text-muted">
-                <i class="fa fa-money"></i>
-                <span>Withdrawals</span>
-                </a>
-            </li>
-            <li>
-            <a href="javascript:void(0);" id="proofbtn" class="text-muted">
-                <i class="fa fa-image"></i>
-                <span>uploaded Images</span>
-            </a>
-        </li>
-            <li id="logout2">
-                Logout<i class="fa fa-sign-out ml-1"></i>
-            </li>
-        </ul>
-    </div><br><br><br><br>
-    <div class="col-md-3 box" id="box2">
-    ${alldpt}
-</div>
-                <div class="col-md-3 box pt-5" id="box4">
-                <center>
-                <h5 class="text-muted mb-3">Deposit Fund</h5>
-                <div class="">
-                <h6 class="text-muted mb-1"><b>1 usd = 0.0000918 BTC</b></h6>
-                <textarea class="form-control mb-2" id="walletid">hf64dy74hdyd63g35gedyd74h4u484jrhfyd63g363ge6</textarea>
-                <button class="btn btn-info btn-sm  mb-2" id="copy" onclick="copyTextFun()"><i class="fa fa-copy pr-2"></i>copy</button><br>
-                  <input type="number"  id="amount" placeholder="Enter Amount > $100" class="btn btn-sm btn-default">
-                <a href="javascript:void(0);" id="cardpay"> <i class="fa fa-credit-card"></i> Pay with credit card</a>
-                </div>
-                <div class="mt-4">
-                <p class="text-muted">upload payment proof</p>
-                   <form class="form-group" id="proofform" action="./../controller/controller.php" method="post" enctype="multipart/form-data">
-                   <input type="file" name="proof" class="btn btn-success btn-sm mb-3">
-                   <button type="submit" id="proofsubmit" class="btn btn-warning btn-sm text-white"><i class="fa fa-upload mr-1"></i>upload</button>
-                   </form>
-                   </div>
-                   </center>
-                </div>
-                <div class="col-md-3 box" id="box3">
-                <h5 class="text-muted p-3">Deposit History</h5>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <th class="ml-1 mr-5">Tx_Ref</th>
-                        <th>Amount</th>
-                        <th>Date</th>
-                        </thead>
-                         <tbody id="tbody">
-                             ${alltransct}
-                         </tbody>
-                    </table>
-                </div>
-                    <hr>
-                </div>
-        `
-        $("#app").fadeIn();
-        $("#app").empty()
-        $("#app").append(template)
-
-    }
 
     $(document).on("click", "#proofsubmit", (e) => {
         e.preventDefault()
@@ -321,8 +152,6 @@ $(document).ready(() => {
         },
         dataType: "JSON",
         success: (data) => {
-            /* console.log(data);
-             alltransct = fetchAllDeposit2(data)*/
             $("#tbody").fadeIn()
             fetchAllDeposit(data)
         }
@@ -350,31 +179,6 @@ $(document).ready(() => {
             $("#tbody").append(template)
         }
     }
-
-    /* function fetchAllDeposit2(data) {
-
-         if (data.status == "success") {
-             $.each(data.alldeposit, (i, val) => {
-                 let template = `
-                 <tr>
-                 <td>${val.tx_ref}</td>
-                 <td>${val.amount}</td>
-                 <td>${val.date}</td>
-                 </tr>
-                 `
-                 $("#tbody").append(template)
-             })
-         } else {
-             let template = `
-             <tr>
-             <td>No Data Found</td>
-             </tr>
-             `
-             $("#tbody").append(template)
-
-         }
-
-     }*/
 
     function getCustomerDetails() {
         $.ajax({
@@ -457,6 +261,7 @@ $(document).ready(() => {
         let email = $("#email").val();
         let password = $("#password").val();
 
+
         $.ajax({
             url: "../controller/controller.php",
             type: "post",
@@ -467,8 +272,8 @@ $(document).ready(() => {
             },
             dataType: "JSON",
             success: function(data) {
-                if (data.status == "success") {
-                    window.location.href = "./dashboard.php"
+                if (data.status === 'success') {
+                    location.href = "./dashboard.php"
                 } else {
                     error = ` <center>
                             <h4 class="p-auto bg-warning rounded text-white">${data.message}</h4>
@@ -480,6 +285,9 @@ $(document).ready(() => {
                         $(".error").empty()
                     }, 3000)
                 }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert(errorThrown);
             }
         })
     })

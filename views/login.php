@@ -36,7 +36,7 @@ header("location: dashboard.php");
 
                     </div>
                     <h5 class="mb-3">Enter your email and password below. </h5>
-                    <form class="form-group" id="login" method="POST" action="../controller/controller.php">
+                    <form class="form-group login" id="login" method="POST" action="../controller/controller.php">
                         <input type="email" id="email" class="form-control" placeholder="Email"
                             style="background-color:whitesmoke" required important><br>
                         <input type="password" id="password" class="form-control" placeholder="password"
@@ -55,5 +55,50 @@ header("location: dashboard.php");
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js "></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js "></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js "></script>
-<script src="./../asset/script.js "></script>
+<!--<script src="./../asset/script.js "></script> -->
+<script>
+$(document).ready(() => {
+
+
+    $(".login").submit((e) => {
+        e.preventDefault();
+        let email = $("#email").val();
+        let password = $("#password").val();
+
+        $.ajax({
+            url: "../controller/controller.php",
+            type: "post",
+            dataType: "JSON",
+            data: {
+                "login": 'login',
+                "email": email,
+                "password": password
+            },
+            success: function(data) {
+
+                console.log(data);
+
+                if (data.status === 'success') {
+                    location.href = "./dashboard.php"
+                } else {
+                    error = ` <center>
+                    <h4 class="p-auto bg-warning rounded text-white">${data.message}</h4>
+                </center>`
+
+                    $(".error").append(error);
+                    $(".error").fadeIn();
+                    setTimeout(function() {
+                        $(".error").empty()
+                    }, 3000)
+                }
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                alert(errorThrown + " error alert nii o");
+            }
+        })
+
+    })
+});
+</script>
+
 </html>

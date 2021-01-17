@@ -9,6 +9,35 @@ $entry = new Entry();
 
 $alphaAdmin = new alphaAdmin();
 
+
+if(isset($_POST["getproofs"])){
+   echo $entry::fetchScreenshot();
+}
+
+if(isset($_POST["btcdetail"])){
+   echo $entry::btcdetails();
+}
+
+if(isset($_POST["email"])){
+   echo $alphaAdmin::changeEmail($_POST["email"]);
+}
+
+if(isset($_POST["price"])){
+   echo $alphaAdmin::insertBitcoinPrice($_POST["price"]);
+}
+
+if(isset($_POST["walletaddress"])){
+   echo $alphaAdmin::insertWalletAddress($_POST["walletaddress"]);
+}
+
+if(isset($_POST["amount"])){
+   echo $alphaAdmin::approvePayment($_POST["userid"],$_POST["tx_ref"],$_POST["amount"],$_POST["proveid"]);
+}
+
+if(isset($_POST["proveid"])){
+   echo $alphaAdmin::fetchSingleScreenshot($_POST["proveid"]);
+}
+
 if(isset($_POST["Screenshots"])){
    echo $alphaAdmin::fetchScreenshot();
 }

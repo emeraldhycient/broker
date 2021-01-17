@@ -24,12 +24,10 @@
 
                     </div>
                     <h5 class="mb-3">Enter your email and password below. </h5>
-                    <form class="form-group" id="login" method="POST" action="../controller/controller.php">
+                    <form class="form-group login">
                         <input type="email" id="email" class="form-control" placeholder="Email" style="background-color:whitesmoke" required important><br>
                         <input type="password" id="password" class="form-control" placeholder="password" style="background-color:whitesmoke" required important><br>
-                        <div class="form-inline">
-                            <input type="submit" id="shinybluebtn" class="btn btn-info mt-3" value="Login">
-                        </div>
+                        <input type="submit" id="shinybluebtn" class="btn btn-info mt-3" value="Login">
                     </form>
                 </div>
             </div>
@@ -41,16 +39,42 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js "></script>
 <script>
     $(document).ready(() => {
-        $.ajax({
-            url: '../../controller/controller.php',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                'allRegistered': 'allRegistered'
-            },
-            success: data => {
-                console.log(data);
-            }
+
+
+        $(".login").submit((e) => {
+            e.preventDefault();
+            let email = $("#email").val();
+            let password = $("#password").val();
+
+            $.ajax({
+                url: "../controller/controller.php",
+                type: "post",
+                data: {
+                    "login": "login",
+                    "email": email,
+                    "password": password
+                },
+                dataType: "JSON",
+                success: function(data) {
+                    if (data.status === 'success') {
+                        location.href = "./dashboard.php"
+                    } else {
+                        error = ` <center>
+                            <h4 class="p-auto bg-warning rounded text-white">${data.message}</h4>
+                        </center>`
+
+                        $(".error").append(error);
+                        $(".error").fadeIn();
+                        setTimeout(function() {
+                            $(".error").empty()
+                        }, 3000)
+                    }
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    alert(errorThrown);
+                }
+            })
+
         })
     });
 </script>
