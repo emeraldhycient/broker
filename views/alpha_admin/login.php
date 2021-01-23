@@ -17,7 +17,7 @@ header("location: dashboard.php");
         href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <link rel="stylesheet" href="./../asset/styles.css">
+    <link rel="stylesheet" href="../../asset/styles.css">
 </head>
 </head>
 
@@ -43,8 +43,6 @@ header("location: dashboard.php");
                             style="background-color:whitesmoke" required important><br>
                         <div class="form-inline">
                             <input type="submit" id="shinybluebtn" class="btn btn-info mt-3" value="Login">
-                            <p class="p-3">OR</p>
-                            <button class="btn"><a href="./signup.html">Create New Account</a></button>
                         </div>
                     </form>
                 </div>
@@ -69,11 +67,11 @@ $(document).ready(() => {
         if (pass.length > 8) {
 
             $.ajax({
-                url: "../controller/controller.php",
+                url: "../../controller/controller.php",
                 type: "POST",
                 dataType: "JSON",
                 data: {
-                    'login': 'login',
+                    'adminlogin': 'login',
                     'email': email,
                     'password': pass
                 },
@@ -83,6 +81,8 @@ $(document).ready(() => {
                         location.href = "./dashboard.php"
                     }
                     console.log(data);
+                    errorMessage(data.message, 'danger')
+
                 },
                 error: (hrx, statuscode, errorThrown) => {
                     alert(hrx.responseText + `lol`)

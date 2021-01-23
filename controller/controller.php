@@ -3,12 +3,21 @@ include_once("../models/Access.php");
 include_once("../models/block_io.php");
 include_once("../models/alphaAdmin.php");
 
+header('Content-Type: application/json');
+
 $blockIo = new blockIo;
 
 $entry = new Entry();
 
 $alphaAdmin = new alphaAdmin();
 
+if(isset($_POST["adminlogin"])){
+   alphaAdmin::login($_POST["email"],$_POST["password"]);
+}
+
+if(isset($_POST["login"])){
+ echo   $entry::login($_POST["email"],$_POST["password"]);
+}
 
 if(isset($_POST["getproofs"])){
    echo $entry::fetchScreenshot();
@@ -18,7 +27,7 @@ if(isset($_POST["btcdetail"])){
    echo $entry::btcdetails();
 }
 
-if(isset($_POST["email"])){
+if(isset($_POST["changeEmail"])){
    echo $alphaAdmin::changeEmail($_POST["email"]);
 }
 
@@ -76,10 +85,6 @@ if(isset($_POST["insertPayment"])){
 
 if(isset($_POST["signup"])){
    echo $entry::register($_POST["fname"],$_POST["lname"],$_POST["email"],$_POST["password"]);
-}
-
-if(isset($_POST["login"])){
-   echo  $entry::login($_POST["email"],$_POST["password"]);
 }
 
 if(isset($_POST["logout"])){

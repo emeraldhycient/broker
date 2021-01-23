@@ -158,52 +158,59 @@ public static function insertScreenshot($img){
 }
 
    public static function login($email,$password){
+     $data = [];
 
-    $data = [];
-    
-       $email = self::filter($email);
-       $password = self::filter($password);
-       $sql = "SELECT * FROM credentials WHERE Email='$email'";
-       $query = self::$connection->query($sql);
+     $email = self::filter($email);
+     $password = self::filter($password);
+     $sql = "SELECT * FROM credentials WHERE Email ='$email' ";
+     $query = self::$connection->query($sql);
 
-       if($query){
+     if($query){
 
-        if($query->num_rows > 0){
-          while($row = $query->fetch_object()){
+      if($query->num_rows > 0){
+
+        while($row = $query->fetch_object()){
             if(password_verify($password,$row->pass)){
+
               $_SESSION["logged"] = $row->userid;
-              $_SESSION["username"] = $row->Fname."-".$row->Lname;
+              $_SESSION["username"] = $row->Fname ."-" .$row->Lname;
+              
               $data = array(
-                "status"=> "success",
+                "status" => "success",
                 "message" => "logged in"
               );
-            
+       
+
             }else{
+              
               $data = array(
-                "status"=> "failed",
-                "message" => "invalid credentials"
+                "status" => "failed",
+                "message" => "wrong details"
               );
+       
 
             }
-          }
-   }else{
-    $data = array(
-      "status"=> "failed",
-      "message" => self::$connection->error
-    );
+        }
 
-   }
-
-       }else{
+      }else{
 
         $data = array(
-          "status"=> "failed",
-          "message" => self::$connection->error
+          "status" => "failed",
+          "message" => "no user found"
         );
-         
-       }
-       
-       return json_encode($data);
+ 
+      }
+     }else{
+
+       $data = array(
+         "status" => "failed",
+         "message" => self::$connection->error
+       );
+
+     }
+     
+     return json_encode($data);
+
    }
 
    public static function register($fname,$lname,$email,$password){

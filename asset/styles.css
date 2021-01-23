@@ -35,8 +35,8 @@ h6 {
 }
 
 #shinybluebtn {
-    box-shadow: 20px 20px 17px #1b6d91, -20px -20px 17px #41ffff;
-    border-radius: 15px;
+    box-shadow: 10px 10px 42px 10px rgba(199, 165, 14, 0.7);
+    border-radius: 6px;
 }
 
 nav {
